@@ -9,17 +9,26 @@ class AllOne:
         self.min_value = 0
         self.max_value = 0 
         
-    def inc(self, key: str) -> None:
+    class DataKey:
+
+        def __init__(self, name):
+            self.name = name
+
+        def __hash__(self):
+            return hash(self.name)        
+    
+    def inc(self, raw_key: str) -> None:
         """
         Inserts a new key <Key> with value 1. Or increments an existing key by 1.
         """
-        if key in self.key_to_value:
-            old_value = self.key_to_value[key]
+        key = DataKey(raw_key)
+        if key.name in self.key_to_value:
+            old_value = self.key_to_value[key.name]
             new_value = old_value + 1
 
-            self.remove_data_key(key, old_value)
+            self.remove_data_key(key.name, old_value)
 
-            self.add_data_key(key, new_value)
+            self.add_data_key(key.name, new_value)
 
             if new_value > self.max_value: 
                 self.max_value = new_value
@@ -27,24 +36,26 @@ class AllOne:
             if old_value == self.min_value and old_value not in self.value_to_key:
                 self.min_value = new_value
 
-            self.key_to_value[key] = new_value
+            self.key_to_value[key.name] = new_value
 
         else:
-            self.key_to_value[key] = 1  
-            self.add_data_key(key, 1)
+            self.key_to_value[key.name] = 1  
+            self.add_data_key(key.name, 1)
 
             if self.max_value == 0: 
                 self.max_value = 1
             self.min_value = 1
 
-    def dec(self, key: str) -> None:
+    def dec(self, raw_key: str) -> None:
         """
         Decrements an existing key by 1. If Key's value is 1, remove it from the data structure.
         """
-        if key in self.key_to_value:
-            if self.key_to_value[key] == 1:
-                self.remove_data_key(key, 1)
-                del self.key_to_value[key]
+
+        key = DataKey(raw_key)
+        if key.name in self.key_to_value:
+            if self.key_to_value[key.name] == 1:
+                self.remove_data_key(key.name, 1)
+                del self.key_to_value[key.name]
 
                 if len(self.key_to_value) == 0:
                     self.max_value = 0
@@ -52,11 +63,11 @@ class AllOne:
                 elif 1 not in self.value_to_key:
                     self.min_value = min(self.value_to_key)
             else:
-                old_value = self.key_to_value[key]
+                old_value = self.key_to_value[key.name]
                 new_value = old_value - 1
 
-                self.remove_data_key(key, old_value)
-                self.add_data_key(key, new_value)
+                self.remove_data_key(key.name, old_value)
+                self.add_data_key(key.name, new_value)
 
                 if new_value < self.min_value:
                     self.min_value = new_value
@@ -64,7 +75,7 @@ class AllOne:
                 if old_value == self.max_value and old_value not in self.value_to_key:
                     self.max_value = new_value
 
-                self.key_to_value[key] = new_value
+                self.key_to_value[key.name] = new_value
 
     def getMaxKey(self) -> str:
         """
