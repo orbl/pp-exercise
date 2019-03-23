@@ -26,6 +26,9 @@ class AllOne:
             
             if old_value == self.min_value and old_value not in self.value_to_key:
                 self.min_value = new_value
+
+            self.key_to_value[key] = new_value
+
         else:
             self.key_to_value[key] = 1  
             self.add_data_key(key, 1)
@@ -33,7 +36,6 @@ class AllOne:
             if self.max_value == 0: 
                 self.max_value = 1
             self.min_value = 1
-
 
     def dec(self, key: str) -> None:
         """
@@ -47,7 +49,7 @@ class AllOne:
                 if len(self.key_to_value) == 0:
                     self.max_value = 0
                     self.min_value = 0
-                elif len(self.value_to_key[1]) == 0:
+                elif 1 not in self.value_to_key:
                     self.min_value = min(self.value_to_key)
             else:
                 old_value = self.key_to_value[key]
@@ -61,6 +63,8 @@ class AllOne:
                 
                 if old_value == self.max_value and old_value not in self.value_to_key:
                     self.max_value = new_value
+
+                self.key_to_value[key] = new_value
 
     def getMaxKey(self) -> str:
         """
