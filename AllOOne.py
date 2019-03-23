@@ -16,16 +16,26 @@ class AllOne:
         ####
         check if not exists
             true -> 
-                set min_value to 1. 
-                add 1 to key_to_value[key]
-                add key to value_to_key[1]
+
+                add 1 to key_to_value[key]     
+                
+                ## add key to value_to_key[1]
+                add_data_key(key,new_value)check if set exists for this datavalue.
+                    if not, create it
+                insert datakey into set at value_to_key(key) 
+
                 if max_value == 0: max_value = 1
+                set min_value to 1
 
             false -> 
                 old_value = key_to_value[key]
                 new_value = old_value + 1
 
-                remove from value_to_key[old_value]
+                ## remove from value_to_key[old_value]
+                remove old_value from SET that exists at value_to_key[old_value]
+                check if the set is empty
+                    it true, remove value_to_key[old_value]
+
                 add to value_to_key[new_value]
 
                 if new_value > max_value: set max_value to new_value
@@ -55,6 +65,16 @@ class AllOne:
             return ""
         else:
             return next(iter(self.value_to_key[self.min_value]))
+
+    def add_data_key(self, key, new_value):
+        """
+        Helper method that handles adding to value_to_key
+        sets
+        """
+        if new_value not in self.value_to_key:
+            self.value_to_key[new_value] = set()
+
+        self.value_to_key[new_value].add(key)
 
 # Your AllOne object will be instantiated and called as such:
 # obj = AllOne()
