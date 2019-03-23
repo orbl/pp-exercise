@@ -12,36 +12,28 @@ class AllOne:
     def inc(self, key: str) -> None:
         """
         Inserts a new key <Key> with value 1. Or increments an existing key by 1.
-        
-        ####
-        check if not exists
-            true -> 
-
-                add 1 to key_to_value[key]     
-                
-                ## add key to value_to_key[1]
-                add_data_key(key,new_value)check if set exists for this datavalue.
-                    if not, create it
-                insert datakey into set at value_to_key(key) 
-
-                if max_value == 0: max_value = 1
-                set min_value to 1
-
-            false -> 
-                old_value = key_to_value[key]
-                new_value = old_value + 1
-
-                ## remove from value_to_key[old_value]
-                remove old_value from SET that exists at value_to_key[old_value]
-                check if the set is empty
-                    it true, remove value_to_key[old_value]
-
-                add to value_to_key[new_value]
-
-                if new_value > max_value: set max_value to new_value
-                
-                if old_value == min_value and there is no other key in valueToKey[old_value]: set min_value to new_value
         """
+        if key in self.key_to_value:
+            old_value = self.key_to_value[key]
+            new_value = old_value + 1
+
+            self.remove_data_key(key, old_value)
+
+            self.add_data_key(key, new_value)
+
+            if new_value > self.max_value: 
+                self.max_value = new_value
+            
+            if old_value == self.min_value and old_value not in self.value_to_key:
+                self.min_value = new_value
+        else:
+            self.key_to_value[key] = 1  
+            self.add_data_key(key, 1)
+
+            if self.max_value == 0: 
+                self.max_value = 1
+            self.min_value = 1
+
 
     def dec(self, key: str) -> None:
         """
@@ -75,6 +67,17 @@ class AllOne:
             self.value_to_key[new_value] = set()
 
         self.value_to_key[new_value].add(key)
+
+    def remove_data_key(self, key, old_value):
+        """
+        Helper method that handles removing from value_to_key
+        sets
+        """       
+        self.value_to_key[old_value].remove(key)
+
+        if len(self.value_to_key[old_value]) == 0:
+            del self.value_to_key[old_value]
+
 
 # Your AllOne object will be instantiated and called as such:
 # obj = AllOne()
