@@ -39,6 +39,28 @@ class AllOne:
         """
         Decrements an existing key by 1. If Key's value is 1, remove it from the data structure.
         """
+        if key in self.key_to_value:
+            if self.key_to_value[key] == 1:
+                self.remove_data_key(key, 1)
+                del self.key_to_value[key]
+
+                if len(self.key_to_value) == 0:
+                    self.max_value = 0
+                    self.min_value = 0
+                elif len(self.value_to_key[1]) == 0:
+                    self.min_value = min(self.value_to_key)
+            else:
+                old_value = self.key_to_value[key]
+                new_value = old_value - 1
+
+                self.remove_data_key(key, old_value)
+                self.add_data_key(key, new_value)
+
+                if new_value < self.min_value:
+                    self.min_value = new_value
+                
+                if old_value == self.max_value and old_value not in self.value_to_key:
+                    self.max_value = new_value
 
     def getMaxKey(self) -> str:
         """
@@ -58,7 +80,7 @@ class AllOne:
         else:
             return next(iter(self.value_to_key[self.min_value]))
 
-    def add_data_key(self, key, new_value):
+    def add_data_key(self, key, new_value) -> None:
         """
         Helper method that handles adding to value_to_key
         sets
@@ -68,7 +90,7 @@ class AllOne:
 
         self.value_to_key[new_value].add(key)
 
-    def remove_data_key(self, key, old_value):
+    def remove_data_key(self, key, old_value) -> None:
         """
         Helper method that handles removing from value_to_key
         sets
